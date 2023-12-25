@@ -6,6 +6,13 @@
                     <v-text-field
                     class="field"
                         :counter="10"
+                        label="Имя"
+                        required
+                        hide-details
+                    ></v-text-field>
+                    <v-text-field
+                    class="field"
+                        :counter="10"
                         label="Email"
                         required
                         hide-details
@@ -20,7 +27,7 @@
                     <v-btn
                         class="btn white--text justify-center"
                         color="blue"
-                    >Войти</v-btn>
+                    >Зарегестрироваться</v-btn>
                 </v-card>
             </v-col>
         </v-row>
