@@ -1,6 +1,7 @@
 <template>
   <v-app>
     <v-main>
+      <router-link to="/user/main"></router-link>
       <router-view />
     </v-main>
   </v-app>
@@ -10,5 +11,6 @@
 export default {
   name: "App",
   data: () => ({}),
+  
 };
 </script>

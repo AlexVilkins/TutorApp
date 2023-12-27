@@ -6,9 +6,33 @@ Vue.use(VueRouter)
 
 const routes = [
     {
-        path: '/',
-        component: () =>
-            import ('@/pages/Main.vue'),    
+        path: '/user',
+        component: () => 
+            import ('@/pages/Main.vue'),
+        children: [
+            {
+                path: 'main',
+                name: 'main',
+                component: () => 
+                    import ('@/pages/user/UserMain.vue'),
+            },
+            {
+                path: 'events',
+                component: () =>
+                    import ('@/pages/Events.vue'),    
+            },
+            {
+                path: 'profile',
+                component: () =>
+                    import ('@/pages/Profile.vue'),    
+            },
+            {
+                path: 'chat',
+                name: 'chat',
+                component: () =>
+                    import ('@/pages/Chat.vue'),    
+            }
+        ] 
     },
     {
         path: '/login',
