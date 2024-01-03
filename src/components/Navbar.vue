@@ -33,7 +33,7 @@
 
 <script>
 export default {
-data() {
+  data() {
     return {
       drawer: false,
       items: [
@@ -47,9 +47,9 @@ data() {
   },
   methods: {
     handleButtonClick (path) {
-        console.log(String(path))
+      console.log(String(path))
       this.$router.push('/user/' + String(path))
     }
   }
 }
-  </script>
+</script>
