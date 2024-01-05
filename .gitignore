@@ -2,6 +2,7 @@
 node_modules
 /dist
 __pycache__/
+backend/.env
 
 
 # local env files
