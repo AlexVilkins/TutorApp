@@ -12,6 +12,9 @@
               <v-btn type="submit" color="primary" block>Зарегистрироваться</v-btn>
             </v-form>
           </v-card-text>
+          <div class="register-button">
+            <button class="transparent-button" @click="login">Войти</button>
+          </div>
         </v-card>
       </v-col>
     </v-row>
@@ -19,29 +22,57 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   data() {
     return {
       name: '',
       email: '',
-      password: ''
+      password: '',
+      role: 1,
     };
   },
   methods: {
-    register() {
-      // Здесь можно добавить логику для отправки данных на сервер и выполнения регистрации
-      console.log('Имя:', this.name);
-      console.log('Email:', this.email);
-      console.log('Пароль:', this.password);
+    async register() {
+      const data = {
+        "email": this.email,
+        "password": this.password,
+        "is_active": true,
+        "is_superuser": false,
+        "is_verified": false,
+        "username": this.name,
+        "role_id": 1
+      }
 
-      // После успешной регистрации можно перенаправить пользователя на другую страницу
-      this.$router.push('/');
+      const response = await axios.post(
+        "http://127.0.0.1:8000/auth/register", data
+      )
+      this.username = response.data.username
+
+      this.$router.push('/user/main');
+    },
+    login() {
+      this.$router.push('/user/login');
     }
+
+
   }
 };
 </script>
 
 <style scoped>
+.register-button {
+  display: flex;
+  justify-content: center;
+}
 
+.transparent-button {
+  background-color: transparent;
+  border: none;
+  color: grey;;
+  font-size: 16px;
+  cursor: pointer;
+}
 
 </style>

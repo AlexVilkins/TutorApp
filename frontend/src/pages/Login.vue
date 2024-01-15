@@ -3,10 +3,10 @@
     <v-row justify="center">
       <v-col cols="12" sm="8" md="4">
         <v-card>
-          <v-card-title class="text-center">Вход</v-card-title>
+          <v-card-title class="text-center">Войти</v-card-title>
           <v-card-text>
             <v-form @submit="login">
-              <v-text-field v-model="email" label="Email" type="email" required></v-text-field>
+              <v-text-field v-model="username" label="Имя" required></v-text-field>
               <v-text-field v-model="password" label="Пароль" type="password" required></v-text-field>
               <v-btn type="submit" color="primary" block>Войти</v-btn>
             </v-form>
@@ -21,23 +21,42 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   data() {
     return {
-      email: '',
-      password: ''
+      username: '',
+      password: '',
+      authToken: ''
     };
   },
   methods: {
-    login() {
-      // Здесь можно добавить логику для отправки данных на сервер и проверки входа
-      this.$router.push('/user/main')
+    async login() {
+      const data = new FormData()
+      data.append('username', this.username);
+      data.append('password', this.password)
 
+      await axios.post(
+        "http://127.0.0.1:8000/auth/jwt/login", data)
       
+      .then(response => {
+      localStorage.authToken = response.data.access_token
+    })
+      this.$router.push('/user/main')
     },
+
     register() {
-      // Здесь можно добавить логику для перехода на страницу регистрации
       this.$router.push('/register')
+    }
+  },
+  // mounted() {
+  //   if (localStorage.name) {
+  //     this.name = localStorage.name;
+  //   }
+  // },
+  watch: {
+    name(newName) {
+      localStorage.authToken = newName;
     }
   }
 };
