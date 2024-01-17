@@ -2,9 +2,16 @@
   <v-container>
     <div v-show="!dialogOpen">
       <h1>Список диалогов</h1>
+      <div>
+    <v-text-field
+      v-model="filterText"
+      label="Поиск..."
+      outlined
+    ></v-text-field>
+  </div>
       <v-list >
         <v-list-item 
-          v-for="(dialog, index) in dialogs" 
+          v-for="(dialog, index) in filteredItems" 
           :key="index"
           @click="openDialog(dialog)"
         >
@@ -62,7 +69,13 @@ export default {
       newMessage: '',
       dialogOpen: false,
       selectedDialog: '',
+      filterText: '',
     };
+  },
+  computed: {
+    filteredItems() {
+      return this.dialogs.filter(item => item.name.toLowerCase().includes(this.filterText.toLowerCase()));
+    }
   },
   methods: {
     openDialog(dialog) {
@@ -73,11 +86,6 @@ export default {
       this.dialogOpen = false;
     },
     sendMessage() {
-      // if (this.newMessage.trim() !== '') {
-      //   this.messages.push({ text: this.newMessage, sent: true });
-      //   this.newMessage = '';
-      // }
-
       if (this.newMessage.trim() !== "") {
         this.messages.push({ id: Date.now(), text: this.newMessage });
         this.newMessage = "";

@@ -23,7 +23,7 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
-      <v-btn @click="$router.push('/login')">Выход</v-btn>
+      <v-btn @click="logout">Выход</v-btn>
     </v-navigation-drawer>
     <router-view></router-view>
 </div>
@@ -49,19 +49,11 @@ export default {
     handleButtonClick (path) {
       console.log(String(path))
       this.$router.push('/user/' + String(path))
+    },
+    logout() {
+      localStorage.removeItem('authToken')
+      this.$router.push('/login')
     }
   },
-
-  // mounted: {
-  //   async getUserName() {
-  //     const response = await axios.get(
-  //       "http://127.0.0.1:8000/auth/register"
-  //     )
-  //     this.username = response.data.name
-  //     .catch(function (error) {
-  //       console.log(error);
-  //     })
-  //   }
-  // }
 }
 </script>

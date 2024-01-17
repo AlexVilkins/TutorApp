@@ -27,7 +27,6 @@ export default {
     return {
       username: '',
       password: '',
-      authToken: ''
     };
   },
   methods: {
@@ -49,11 +48,7 @@ export default {
       this.$router.push('/register')
     }
   },
-  // mounted() {
-  //   if (localStorage.name) {
-  //     this.name = localStorage.name;
-  //   }
-  // },
+  
   watch: {
     name(newName) {
       localStorage.authToken = newName;

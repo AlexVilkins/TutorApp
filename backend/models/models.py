@@ -1,4 +1,4 @@
-from sqlalchemy import MetaData, Boolean, Table, Column, Integer, String, TIMESTAMP, ForeignKey, JSON
+from sqlalchemy import MetaData, Float, Boolean, Table, Column, Integer, String, TIMESTAMP, ForeignKey, JSON
 from datetime import datetime
 
 metadata = MetaData()
@@ -23,4 +23,14 @@ user = Table(
     Column("is_active", Boolean, default=True, nullable=False),
     Column("is_superuser", Boolean, default=False, nullable=False),
     Column("is_verified", Boolean, default=False, nullable=False),
+)
+
+application = Table(
+    "application",
+    metadata,
+    Column("id", Integer, primary_key=True),
+    Column("username", String, nullable=False),
+    Column("price", Integer, nullable=False),
+    Column("object", String, nullable=False),
+    Column("hour", Float, nullable=False),
 )
