@@ -1,12 +1,12 @@
 from fastapi import FastAPI
-from fastapi_users import FastAPIUsers
-from fastapi_users import fastapi_users
+
+from auth.base_config import auth_backend, fastapi_users
+from auth.schemas import UserRead, UserCreate
+
+from operations.router import router as router_operation
+
 from fastapi.middleware.cors import CORSMiddleware
 
-from auth.auth import auth_backend
-from auth.database import User
-from auth.manager import get_user_manager
-from auth.shemas import UserCreate, UserRead
 
 app = FastAPI(
     title="TutorApp"
@@ -26,11 +26,6 @@ app.add_middleware(
 )
 
 
-fastapi_users = FastAPIUsers[User, int](
-    get_user_manager,
-    [auth_backend],
-)
-
 app.include_router(
     fastapi_users.get_auth_router(auth_backend),
     prefix="/auth/jwt",
@@ -42,3 +37,5 @@ app.include_router(
     prefix="/auth",
     tags=["auth"],
 )
+
+app.include_router(router_operation)
