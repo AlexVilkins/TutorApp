@@ -39,6 +39,7 @@ export default {
         "http://127.0.0.1:8000/auth/jwt/login", data)
       
       .then(response => {
+        console.log('cooke has been received!')
       localStorage.authToken = response.data.access_token
     })
       this.$router.push('/user/main')

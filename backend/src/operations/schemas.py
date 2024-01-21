@@ -3,7 +3,7 @@ from datetime import datetime
 from pydantic import BaseModel
 
 
-class OperationCreate(BaseModel):
+class ApplicationCreate(BaseModel):
     id: int
     username: str
     price: int
