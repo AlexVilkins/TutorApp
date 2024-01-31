@@ -8,51 +8,53 @@
           outlined
         ></v-text-field>
       </div>
-      <!-- <div class="filter"> -->
         <div class="filter">
-          <v-col md="4">
           <v-select
-            multiple
             chips
             v-model="searchObject" 
             :items="['Математика', 'Русский язык', 'Литература', 'Georgia', 'Texas', 'Wyoming']" 
             label="Предмет"
           ></v-select>
-          </v-col>
-          <v-col md="4">
           <v-select
-            multiple
             chips
-            v-model="searcPrice"
+            v-model="searchPrice"
             label="Цена"
-            :items="['500', '1000', 'Florida', 'Georgia', 'Texas', 'Wyoming']"
+            :items="[500, 1000]"
             variant="outlined"
           ></v-select>
-        </v-col>
-        <v-col md="4">
           <v-select
-            multiple
             chips
-            v-model="serachHour"
+            v-model="searchHour"
             label="Часы"
-            :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']"
+            :items="[1, 1.5]"
             variant="outlined"
           ></v-select>
-        </v-col>
+        <v-btn 
+          @click="changePage()"
+          color="primary">Применить
+        </v-btn>
         </div>
-      <v-row>
-        <v-col cols="12" sm="6" md="4" v-for="(request, index) in filteredItems" :key="index">
+        <v-div>
+          <v-row>
+        <v-col cols="12" sm="6" md="6" v-for="item in applications" :key="item.id">
           <v-card>
-            <v-card-title>{{ request.username }}</v-card-title>
+            <v-card-title>{{ item.username }}</v-card-title>
             <v-card-text>
-              <div>Предмер: {{ request.object }}</div>
-              <div>Цена: {{ request.price }}</div>
-              <div>Часы на занятие: {{ request.hour }}</div>
-              <div>Опубликовано: {{ request.datetime }}</div>
+              <div>Предмер: {{ item.object }}</div>
+              <div>Цена: {{ item.price }}</div>
+              <div>Часы на занятие: {{ item.hour }}</div>
+              <div>Опубликовано: {{ item.datetime }}</div>
             </v-card-text>
           </v-card>
         </v-col>
-      </v-row>
+        </v-row>
+        <v-pagination
+          v-model="currentPage"
+          :length="totalPages"
+          @input="changePage"
+          color="primary"
+        ></v-pagination>
+      </v-div>
     </v-container>
   </template>
   
@@ -64,30 +66,24 @@
       return {
         applications: [],
         filterText: '',
-        searchObject: [],
-        searchPrice: [],
-        searchHour: [],
+        searchObject: '',
+        searchPrice: '',
+        searchHour: '',
+        currentPage: 1,
+        itemsPerPage: 10,
+        totalItems: 0,
       };
     },
     computed: {
-      filteredItems() {
-        return this.applications.filter(item => {
-          if (!this.searchObject.length == 0 && !this.searchObject.includes(item.object)){
-            return false;
-          }
-          if (!this.searchPrice.length == 0 && !this.searchPrice.includes(item.price)) {
-            return false;
-          }
-        if (this.selectedS && item.size !== this.selectedSize) {
-          return false;
-        }
-          return true;
-      })
-        // return this.applications.filter(item => item.object.toLowerCase().includes(this.filterText.toLowerCase()));
-      }
-    },
-    async mounted() {
-      await this.get_applications();
+      paginatedData() {
+        const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+        const endIndex = startIndex + this.itemsPerPage;
+        // changePage();
+        return this.applications.slice(startIndex, endIndex);
+      },
+      totalPages() {
+        return Math.ceil(this.totalItems / this.itemsPerPage);
+      },
       
     },
     methods: {
@@ -96,16 +92,40 @@
           'http://127.0.0.1:8000/operations/application'
         )
         .then(response => (this.applications = response.data));
+      },
+      async filteredItems(){
+        const data = { 'searchObject': this.searchObject};
 
-      }
-    }
+        await axios.post(
+          "http://127.0.0.1:8000/operations/filter_data", data
+        )
+        .then(response => (this.applications = response.data))
+      },
+      async changePage() {
+        let query = `http://127.0.0.1:8000/operations/application?page=${this.currentPage}`;
+
+        if (this.searchObject) query += `&object=${this.searchObject}`;
+        if (this.searchPrice) query += `&price=${this.searchPrice}`;
+        if (this.searchHour) query += `&hour=${this.searchHour}`;
+
+        console.log(query)
+
+        const response = await axios.get(
+          query
+        );
+          this.applications = response.data.items,
+          this.totalItems = response.data.totalItems
+      },
+    },
+    created() {    
+      this.changePage();
+    },
   };
   </script>
 
 <style>
 .filter {
   display: flex;
-  justify-content: space-between;
-  /* margin: 10px; */
+  justify-content: space-around;
 }
 </style>
