@@ -70,12 +70,20 @@ export default {
       dialogOpen: false,
       selectedDialog: '',
       filterText: '',
+      socket: null
     };
   },
   computed: {
     filteredItems() {
       return this.dialogs.filter(item => item.name.toLowerCase().includes(this.filterText.toLowerCase()));
     }
+  },
+  mounted() {
+    const client_id = Date.now()
+    this.socket = new WebSocket(`ws://localhost:8000/websockets/ws/${client_id}`);
+    this.socket.onopen = () => {
+      console.log('Connection successful!');
+    };
   },
   methods: {
     openDialog(dialog) {
@@ -87,8 +95,18 @@ export default {
     },
     sendMessage() {
       if (this.newMessage.trim() !== "") {
-        this.messages.push({ id: Date.now(), text: this.newMessage });
-        this.newMessage = "";
+
+        this.socket.send(this.newMessage)
+        this.newMessage = ''
+        
+        this.socket.onmessage = (event) => {
+          this.messages.push({
+            id: Date.now(),
+            text: event.data.split(':')[1],
+            sent: false
+          })
+        };
+
         this.$nextTick(() => {
           this.scrollToBottom();
         });

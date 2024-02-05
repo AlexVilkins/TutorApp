@@ -4,6 +4,7 @@ from auth.base_config import auth_backend, fastapi_users
 from auth.schemas import UserRead, UserCreate
 
 from operations.router import router as router_operation
+from chat.router import router as chat_router
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -25,7 +26,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 app.include_router(
     fastapi_users.get_auth_router(auth_backend),
     prefix="/auth/jwt",
@@ -39,3 +39,4 @@ app.include_router(
 )
 
 app.include_router(router_operation)
+app.include_router(chat_router)
